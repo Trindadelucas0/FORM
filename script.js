@@ -12,6 +12,12 @@ let warningEl = null;
 
 let currentStep = 0;
 
+function getMobileStickyOffset() {
+  const header = document.querySelector(".card-header");
+  if (!header) return 10;
+  return header.getBoundingClientRect().height + 8;
+}
+
 const fieldLabels = {
   nomeCompleto: "Nome completo",
   whatsapp: "WhatsApp",
@@ -63,10 +69,15 @@ function showStep(stepIndex) {
     input.focus();
   }
 
-  // Em telas menores, mantém a etapa ativa sempre em foco visual.
+  // Em telas menores, mantém a etapa ativa visível sem saltos grandes.
   if (window.matchMedia("(max-width: 768px)").matches) {
     requestAnimationFrame(() => {
-      activeStep.scrollIntoView({ behavior: "smooth", block: "start" });
+      const offset = getMobileStickyOffset();
+      const targetTop = activeStep.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({
+        top: Math.max(targetTop, 0),
+        behavior: "smooth",
+      });
     });
   }
 }
@@ -154,7 +165,7 @@ function buildReview() {
 
 function buildWhatsAppMessage(data) {
   const lines = [
-    "Confirmacao de presenca - Evento",
+    "Confirmação de presença - Café com Negócios",
     "",
     `Nome completo: ${data.nomeCompleto}`,
     `Idade: ${data.idade}`,
@@ -165,6 +176,9 @@ function buildWhatsAppMessage(data) {
   }
 
   lines.push(
+    `Area de atuacao: ${data.areaAtuacao}`,
+    `Origem do contato: ${data.origemEvento}`,
+    `Principal desafio: ${data.principalDesafio}`,
     `Presenca: ${data.confirmacaoPresenca}`,
     `WhatsApp: ${data.whatsapp}`,
     `E-mail: ${data.email}`
@@ -263,7 +277,7 @@ form.addEventListener("submit", async (event) => {
   if (submitBtn.disabled) return;
 
   submitBtn.disabled = true;
-  submitBtn.textContent = "Enviando...";
+  submitBtn.textContent = "Confirmando...";
 
   const data = getFormDataObject();
   const waMessage = buildWhatsAppMessage(data);
@@ -273,7 +287,7 @@ form.addEventListener("submit", async (event) => {
   try {
     await sendToSheetMonkey(data);
   } catch (error) {
-    warning = "Nao foi possivel enviar para o banco agora, mas voce pode confirmar pelo WhatsApp.";
+    warning = "Nao foi possivel registrar no banco agora, mas sua confirmacao pode ser finalizada pelo WhatsApp.";
   }
 
   form.hidden = true;
@@ -294,7 +308,7 @@ form.addEventListener("submit", async (event) => {
   openWhatsApp(waMessage);
 
   submitBtn.disabled = false;
-  submitBtn.textContent = "Enviar formulário";
+  submitBtn.textContent = "Confirmar presença";
 });
 
 restartBtn.addEventListener("click", () => {
