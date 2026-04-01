@@ -114,8 +114,10 @@ body {
 .panel-right {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 16px;
   padding: 72px 24px 28px;
 }
 
@@ -128,6 +130,64 @@ body {
   box-shadow: 0 30px 64px rgba(11, 10, 7, 0.2), 0 10px 24px rgba(11, 10, 7, 0.1);
   backdrop-filter: blur(12px);
   overflow: hidden;
+}
+
+.event-meta-card {
+  width: 100%;
+  max-width: 620px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 14px 32px rgba(8, 7, 5, 0.22);
+  padding: 18px;
+}
+
+.event-meta-copy {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.event-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.event-meta-item {
+  background: rgba(0, 0, 0, 0.16);
+  padding: 12px;
+}
+
+.event-meta-label {
+  color: #e7cb98;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.event-meta-value {
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.event-meta-tag {
+  display: inline-block;
+  margin-top: 3px;
+  font-size: 10px;
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: rgba(201, 169, 110, 0.22);
+  color: #f2ddba;
+  letter-spacing: 0.04em;
 }
 
 .card-top {
@@ -517,6 +577,19 @@ input.invalid {
   .step-q {
     font-size: 23px;
   }
+
+  .event-meta-card {
+    border-radius: 14px;
+    padding: 14px;
+  }
+
+  .event-meta-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .event-meta-item:last-child {
+    grid-column: span 2;
+  }
 }
 
 @media (max-width: 540px) {
@@ -594,5 +667,22 @@ input.invalid {
 
   .success-desc {
     font-size: 13.5px;
+  }
+
+  .event-meta-card {
+    padding: 12px;
+  }
+
+  .event-meta-copy {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .event-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-meta-item:last-child {
+    grid-column: auto;
   }
 }
