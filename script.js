@@ -150,29 +150,20 @@ function buildReview() {
 }
 
 function buildWhatsApp(data) {
-  const lines = [
+  return [
     "Confirmação de presença — Café com Negócios",
     "",
-    `Nome: ${data.nomeCompleto}`,
-    `Idade: ${data.idade}`,
-  ];
-  if (data.empresa) lines.push(`Empresa: ${data.empresa}`);
-  lines.push(
-    `Área de atuação: ${data.areaAtuacao}`,
-    `Origem: ${data.origemEvento}`,
-    `Principal desafio: ${data.principalDesafio}`,
-    `Presença: ${data.confirmacaoPresenca}`,
-    `WhatsApp: ${data.whatsapp}`,
-    `E-mail: ${data.email}`
-  );
-  return lines.join("\n");
+    buildSheetBlock(data),
+  ].join("\n");
 }
 
 function buildSheetBlock(data) {
+  const formatQuestionNumber = (index) => String(index + 1).padStart(2, "0");
+
   return sheetBlockOrder
     .map(({ key, question }, index) => {
       const value = data[key] || "Nao informado";
-      return `${index + 1} pergunta\n${question}\nresposta\n${value}\n=======`;
+      return `Pergunta ${formatQuestionNumber(index)}\n${question}\nResposta\n${value}\n========`;
     })
     .join("\n\n");
 }
