@@ -3,204 +3,68 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Confirmação de Presença | Café com Negócios</title>
+    <title>Café com Negócios | Exito Business Network</title>
     <meta
       name="description"
-      content="Confirme sua presença no Café com Negócios e fortaleça seu networking empresarial em Unaí."
+      content="Encontro empresarial para networking qualificado. Conheça o evento Café com Negócios e confirme sua participação."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="page">
-      <section class="event-panel" aria-label="Informações do evento">
-        <div class="brand-lockup">
-          <p class="event-kicker">Encontro Empresarial</p>
-          <p class="brand-mark">EXITO BUSINESS NETWORK</p>
-        </div>
+    <div class="bg-scene" aria-hidden="true">
+      <div class="bg-circle c1"></div>
+      <div class="bg-circle c2"></div>
+      <div class="bg-circle c3"></div>
+      <div class="grain"></div>
+    </div>
 
-        <h1>Café com Negócios</h1>
-        <p class="event-subtitle">
-          Conecte-se com líderes locais, gere novas oportunidades e avance decisões estratégicas para o crescimento da sua empresa.
+    <main class="landing">
+      <section class="hero" aria-label="Informações do evento">
+        <p class="eyebrow reveal" style="--reveal-delay: 0ms">Encontro Empresarial</p>
+        <h1 class="event-title reveal" style="--reveal-delay: 110ms">
+          Café com<br /><em>Negócios</em>
+        </h1>
+
+        <p class="event-desc reveal" style="--reveal-delay: 220ms">
+          Conecte-se a lideranças da sua cidade, abra novas frentes comerciais e
+          fortaleça decisões estratégicas para acelerar o crescimento da sua empresa.
         </p>
 
-        <ul class="value-list" aria-label="Diferenciais do evento">
-          <li>Networking qualificado com empresários da região</li>
-          <li>Ambiente executivo para conexões de alto valor</li>
-          <li>Troca prática sobre vendas, gestão e expansão</li>
-        </ul>
-
-        <div class="event-meta" aria-label="Dados do evento">
-          <article class="meta-item">
+        <div class="meta-grid reveal" aria-label="Dados do evento" style="--reveal-delay: 340ms">
+          <div class="meta-block">
             <p class="meta-label">Local</p>
-            <p class="meta-value">Tipo Coworking - Unaí, MG</p>
-          </article>
-          <article class="meta-item">
+            <p class="meta-value">
+              <strong>Tipo Coworking</strong>
+              <span>Unaí, MG</span>
+            </p>
+          </div>
+          <div class="meta-block">
             <p class="meta-label">Data e hora</p>
-            <p class="meta-value">10/04 às 7:30</p>
-          </article>
-          <article class="meta-item">
+            <p class="meta-value">
+              <strong>10 de abril</strong>
+              <span>às 7h30</span>
+            </p>
+          </div>
+          <div class="meta-block">
             <p class="meta-label">Formato</p>
-            <p class="meta-value">Presencial | Vagas limitadas</p>
-          </article>
+            <p class="meta-value">
+              <strong>Presencial</strong>
+              <span class="tag-vagas">Vagas limitadas</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="cta-wrap reveal" style="--reveal-delay: 460ms">
+          <a class="btn-cta" href="./perguntas.html">Responder perguntas e confirmar presença</a>
+          <p class="cta-note">Leva menos de 2 minutos para concluir.</p>
         </div>
       </section>
-
-      <section class="form-card" aria-live="polite">
-        <header class="card-header">
-          <p class="badge">EXITO BUSINESS NETWORK</p>
-          <p class="form-kicker">Encontro empresarial</p>
-          <h1 class="form-title">Café com Negócios</h1>
-          <p class="subtitle">
-            Confirme sua presença em um fluxo rápido e profissional.
-          </p>
-          <div class="event-summary" aria-label="Resumo rápido do evento">
-            <p class="summary-title">Resumo do evento</p>
-            <div class="summary-chips">
-              <span>10/04 · 7:30</span>
-              <span>Tipo Coworking · Unaí</span>
-              <span>Presencial · Vagas limitadas</span>
-            </div>
-          </div>
-
-          <div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <div class="progress-bar" id="progressBar"></div>
-          </div>
-          <p class="progress-label" id="progressLabel">Etapa 1 de 10</p>
-        </header>
-
-        <form id="eventForm" class="wizard-form" novalidate>
-          <section class="step active" data-step="0">
-            <h2>Qual é o seu nome completo?</h2>
-            <input type="text" id="nomeCompleto" name="nomeCompleto" autocomplete="name" required placeholder="Ex.: Maria Silva Souza" />
-            <p class="hint">Use o nome como deseja constar na lista de presença.</p>
-            <div class="step-actions">
-              <button type="button" class="btn btn-primary" data-next>Continuar</button>
-            </div>
-          </section>
-
-          <section class="step" data-step="1">
-            <h2>Qual é o seu WhatsApp?</h2>
-            <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" required placeholder="(00) 00000-0000" />
-            <p class="hint">Canal oficial para confirmação e orientações do evento.</p>
-            <div class="step-actions">
-              <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
-              <button type="button" class="btn btn-primary" data-next>Continuar</button>
-            </div>
-          </section>
-
-          <section class="step" data-step="2">
-            <h2>Qual é o seu e-mail?</h2>
-            <input type="email" id="email" name="email" autocomplete="email" required placeholder="voce@empresa.com" />
-            <div class="step-actions">
-              <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
-              <button type="button" class="btn btn-primary" data-next>Continuar</button>
-            </div>
-          </section>
-
-          <section class="step" data-step="3">
-            <h2>Qual é o nome da sua empresa? <span>(opcional)</span></h2>
-            <input type="text" id="empresa" name="empresa" autocomplete="organization" placeholder="Ex.: Exito Consultoria" />
-            <div class="step-actions">
-              <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
-              <button type="button" class="btn btn-primary" data-next>Continuar</button>
-            </div>
-          </section>
-
-          <section class="step" data-step="4">
-            <h2>Qual é a sua idade?</h2>
-            <input type="number" id="idade" name="idade" min="14" max="110" required placeholder="Ex.: 34" />
-            <div class="step-actions">
-              <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
-              <button type="button" class="btn btn-primary" data-next>Continuar</button>
-            </div>
-          </section>
-
-          <section class="step" data-step="5">
-            <h2>Qual é a área de atuação da sua empresa?</h2>
-            <div class="options" data-choice-group="areaAtuacao">
-              <button type="button" class="option" data-value="Comercio">Comércio</button>
-              <button type="button" class="option" data-value="Servicos">Serviços</button>
-              <button type="button" class="option" data-value="Industria">Indústria</button>
-              <button type="button" class="option" data-value="Tecnologia">Tecnologia</button>
-              <button type="button" class="option" data-value="Saude">Saúde</button>
-              <button type="button" class="option" data-value="Outro">Outro</button>
-            </div>
-            <input type="hidden" id="areaAtuacao" name="areaAtuacao" required />
-            <div class="step-actions">
-              <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
-            </div>
-          </section>
-
-          <section class="step" data-step="6">
-            <h2>Como você ficou sabendo do evento?</h2>
-            <div class="options" data-choice-group="origemEvento">
-              <button type="button" class="option" data-value="Instagram">Instagram</button>
-              <button type="button" class="option" data-value="WhatsApp">WhatsApp</button>
-              <button type="button" class="option" data-value="Indicacao">Indicação</button>
-              <button type="button" class="option" data-value="Site">Site</button>
-              <button type="button" class="option" data-value="Outro">Outro</button>
-            </div>
-            <input type="hidden" id="origemEvento" name="origemEvento" required />
-            <div class="step-actions">
-              <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
-            </div>
-          </section>
-
-          <section class="step" data-step="7">
-            <h2>Qual é o principal desafio da sua empresa hoje?</h2>
-            <div class="options" data-choice-group="principalDesafio">
-              <button type="button" class="option" data-value="Vendas">Aumentar vendas</button>
-              <button type="button" class="option" data-value="Organizacao">Organizar processos</button>
-              <button type="button" class="option" data-value="Equipe">Montar/gestionar equipe</button>
-              <button type="button" class="option" data-value="Financeiro">Controle financeiro</button>
-              <button type="button" class="option" data-value="Marketing">Atrair clientes</button>
-            </div>
-            <input type="hidden" id="principalDesafio" name="principalDesafio" required />
-            <div class="step-actions">
-              <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
-            </div>
-          </section>
-
-          <section class="step" data-step="8">
-            <h2>Você confirma sua presença no evento?</h2>
-            <div class="options" data-choice-group="confirmacaoPresenca">
-              <button type="button" class="option" data-value="Sim">Sim, confirmo</button>
-              <button type="button" class="option" data-value="Talvez">Talvez</button>
-              <button type="button" class="option" data-value="Nao">Não poderei ir</button>
-            </div>
-            <input type="hidden" id="confirmacaoPresenca" name="confirmacaoPresenca" required />
-            <div class="step-actions">
-              <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
-            </div>
-          </section>
-
-          <section class="step" data-step="9">
-            <h2>Tudo pronto para enviar?</h2>
-            <p class="hint">Revise as informações e finalize sua confirmação.</p>
-            <div id="reviewBox" class="review-box"></div>
-            <div class="step-actions">
-              <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
-              <button type="submit" class="btn btn-primary">Confirmar presença</button>
-            </div>
-          </section>
-        </form>
-
-        <section id="successState" class="success-state" hidden>
-          <h2>Presença registrada!</h2>
-          <p>
-            Seu cadastro foi concluído. Vamos abrir o WhatsApp com uma mensagem pronta para finalizar a confirmação.
-          </p>
-          <button type="button" id="restartBtn" class="btn btn-secondary">Responder novamente</button>
-        </section>
-      </section>
     </main>
-
-    <script src="./script.js"></script>
   </body>
 </html>

@@ -1,127 +1,124 @@
 const SHEETMONKEY_URL = "https://api.sheetmonkey.io/form/axErGpUycFbk49zD3z1Sg3";
-const WHATSAPP_NUMBER = "553898788927";
+const WHATSAPP_NUMBER = "3898788927";
 
-const form = document.getElementById("eventForm");
-const steps = Array.from(document.querySelectorAll(".step"));
+const form       = document.getElementById("eventForm");
+const steps      = Array.from(document.querySelectorAll(".step"));
 const progressBar = document.getElementById("progressBar");
 const progressLabel = document.getElementById("progressLabel");
-const reviewBox = document.getElementById("reviewBox");
+const progressWrap  = document.getElementById("progressWrap");
+const reviewBox  = document.getElementById("reviewBox");
 const successState = document.getElementById("successState");
 const restartBtn = document.getElementById("restartBtn");
-let warningEl = null;
 
 let currentStep = 0;
+let warningEl   = null;
 
-function getMobileStickyOffset() {
-  const header = document.querySelector(".card-header");
-  if (!header) return 10;
-  return header.getBoundingClientRect().height + 8;
-}
+const TOTAL_STEPS = steps.length; // includes review step
 
 const fieldLabels = {
-  nomeCompleto: "Nome completo",
-  whatsapp: "WhatsApp",
-  email: "E-mail",
-  empresa: "Empresa",
-  idade: "Idade",
-  areaAtuacao: "Área de atuação",
-  origemEvento: "Como conheceu o evento",
-  principalDesafio: "Principal desafio",
-  confirmacaoPresenca: "Presença no evento",
+  nomeCompleto:        "Nome completo",
+  whatsapp:            "WhatsApp",
+  email:               "E-mail",
+  empresa:             "Empresa",
+  idade:               "Idade",
+  areaAtuacao:         "Área de atuação",
+  origemEvento:        "Como conheceu",
+  principalDesafio:    "Principal desafio",
+  confirmacaoPresenca: "Confirmação",
 };
 
 const sheetBlockOrder = [
-  { key: "nomeCompleto", question: "Qual é o seu nome completo?" },
-  { key: "whatsapp", question: "Qual é o seu WhatsApp?" },
-  { key: "email", question: "Qual é o seu e-mail?" },
-  { key: "empresa", question: "Qual é o nome da sua empresa?" },
-  { key: "idade", question: "Qual é a sua idade?" },
-  { key: "areaAtuacao", question: "Qual é a área de atuação da sua empresa?" },
-  { key: "origemEvento", question: "Como você ficou sabendo do evento?" },
-  {
-    key: "principalDesafio",
-    question:
-      "Qual é o principal desafio que você enfrenta hoje para crescer e organizar sua empresa?",
-  },
+  { key: "nomeCompleto",        question: "Qual é o seu nome completo?" },
+  { key: "whatsapp",            question: "Qual é o seu WhatsApp?" },
+  { key: "email",               question: "Qual é o seu e-mail?" },
+  { key: "empresa",             question: "Qual é o nome da sua empresa?" },
+  { key: "idade",               question: "Qual é a sua idade?" },
+  { key: "areaAtuacao",         question: "Qual é a área de atuação da sua empresa?" },
+  { key: "origemEvento",        question: "Como você ficou sabendo do evento?" },
+  { key: "principalDesafio",    question: "Qual é o principal desafio que você enfrenta hoje para crescer e organizar sua empresa?" },
   { key: "confirmacaoPresenca", question: "Você confirma sua presença no evento?" },
 ];
 
-function showStep(stepIndex) {
-  currentStep = Math.max(0, Math.min(stepIndex, steps.length - 1));
+if (
+  !form ||
+  !steps.length ||
+  !progressBar ||
+  !progressLabel ||
+  !progressWrap ||
+  !reviewBox ||
+  !successState ||
+  !restartBtn
+) {
+  // Page without wizard markup (e.g. index landing).
+  // Exit safely and keep script reusable.
+} else {
 
-  steps.forEach((step, idx) => {
-    step.classList.toggle("active", idx === currentStep);
+/* ─── NAVIGATION ─────────────────────────────────── */
+function showStep(idx) {
+  currentStep = Math.max(0, Math.min(idx, TOTAL_STEPS - 1));
+
+  steps.forEach((step, i) => {
+    step.classList.toggle("active", i === currentStep);
   });
 
-  const activeStep = steps[currentStep];
+  const pct = ((currentStep + 1) / TOTAL_STEPS) * 100;
+  progressBar.style.width = `${pct}%`;
+  progressWrap.setAttribute("aria-valuenow", String(Math.round(pct)));
+  progressLabel.textContent = `Etapa ${currentStep + 1} de ${TOTAL_STEPS}`;
 
-  const progress = ((currentStep + 1) / steps.length) * 100;
-  progressBar.style.width = `${progress}%`;
-  progressLabel.textContent = `Etapa ${currentStep + 1} de ${steps.length}`;
-  document.querySelector(".progress-wrap").setAttribute("aria-valuenow", String(Math.round(progress)));
+  if (currentStep === TOTAL_STEPS - 1) buildReview();
 
-  if (currentStep === steps.length - 1) {
-    buildReview();
-  }
+  // Focus first field
+  const input = steps[currentStep].querySelector("input:not([type='hidden'])");
+  if (input) setTimeout(() => input.focus(), 80);
 
-  const input = activeStep.querySelector("input:not([type='hidden'])");
-  if (input) {
-    input.focus();
-  }
-
-  // Em telas menores, mantém a etapa ativa visível sem saltos grandes.
-  if (window.matchMedia("(max-width: 768px)").matches) {
-    requestAnimationFrame(() => {
-      const offset = getMobileStickyOffset();
-      const targetTop = activeStep.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({
-        top: Math.max(targetTop, 0),
-        behavior: "smooth",
-      });
-    });
+  // Smooth scroll on mobile
+  if (window.innerWidth <= 900) {
+    const card = document.querySelector(".form-card");
+    if (card) {
+      setTimeout(() => {
+        card.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 60);
+    }
   }
 }
 
-function getCurrentInput() {
-  return steps[currentStep].querySelector("input:not([type='hidden'])");
-}
-
-function validateCurrentStep() {
+/* ─── VALIDATION ─────────────────────────────────── */
+function validate() {
   const activeStep = steps[currentStep];
-  const input = getCurrentInput();
-  const hiddenRequired = activeStep.querySelector("input[type='hidden'][required]");
+  const input      = activeStep.querySelector("input:not([type='hidden'])");
+  const hidden     = activeStep.querySelector("input[type='hidden'][required]");
 
-  let valid = true;
+  let ok = true;
 
   if (input) {
     input.classList.remove("invalid");
 
-    if (input.required && !input.value.trim()) {
-      valid = false;
-    }
+    if (input.required && !input.value.trim()) ok = false;
 
     if (input.type === "email" && input.value.trim()) {
-      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
-      if (!emailOk) valid = false;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) ok = false;
     }
 
     if (input.id === "idade" && input.value.trim()) {
       const age = Number(input.value);
-      if (Number.isNaN(age) || age < 14 || age > 110) valid = false;
+      if (Number.isNaN(age) || age < 14 || age > 110) ok = false;
     }
 
-    if (!valid) input.classList.add("invalid");
+    if (!ok) {
+      input.classList.add("invalid");
+      input.focus();
+      input.addEventListener("input", () => input.classList.remove("invalid"), { once: true });
+    }
   }
 
-  if (hiddenRequired && !hiddenRequired.value) {
-    valid = false;
-  }
+  if (hidden && !hidden.value) ok = false;
 
-  return valid;
+  return ok;
 }
 
 function nextStep() {
-  if (!validateCurrentStep()) return;
+  if (!validate()) return;
   showStep(currentStep + 1);
 }
 
@@ -129,202 +126,198 @@ function prevStep() {
   showStep(currentStep - 1);
 }
 
-function getFormDataObject() {
-  const formData = new FormData(form);
-  const data = {};
-  for (const [key, value] of formData.entries()) {
-    data[key] = String(value).trim();
-  }
-  return data;
+/* ─── DATA HELPERS ───────────────────────────────── */
+function getFormData() {
+  const fd = new FormData(form);
+  const obj = {};
+  for (const [k, v] of fd.entries()) obj[k] = String(v).trim();
+  return obj;
 }
 
 function buildReview() {
-  const data = getFormDataObject();
-  const order = [
-    "nomeCompleto",
-    "whatsapp",
-    "email",
-    "empresa",
-    "idade",
-    "areaAtuacao",
-    "origemEvento",
-    "principalDesafio",
-    "confirmacaoPresenca",
-  ];
+  const data  = getFormData();
+  const order = Object.keys(fieldLabels);
 
   reviewBox.innerHTML = "";
   order.forEach((key) => {
     if (key === "empresa" && !data[key]) return;
-    const value = data[key] || "-";
-    const p = document.createElement("p");
-    p.className = "review-item";
-    p.innerHTML = `<strong>${fieldLabels[key]}:</strong> ${value}`;
-    reviewBox.appendChild(p);
+    const value = data[key] || "–";
+    const row = document.createElement("div");
+    row.className = "review-row";
+    row.innerHTML = `<span class="review-label">${fieldLabels[key]}</span><span class="review-value">${value}</span>`;
+    reviewBox.appendChild(row);
   });
 }
 
-function buildWhatsAppMessage(data) {
+function buildWhatsApp(data) {
   const lines = [
-    "Confirmação de presença - Café com Negócios",
+    "Confirmação de presença — Café com Negócios",
     "",
-    `Nome completo: ${data.nomeCompleto}`,
+    `Nome: ${data.nomeCompleto}`,
     `Idade: ${data.idade}`,
   ];
-
-  if (data.empresa) {
-    lines.push(`Empresa: ${data.empresa}`);
-  }
-
+  if (data.empresa) lines.push(`Empresa: ${data.empresa}`);
   lines.push(
-    `Area de atuacao: ${data.areaAtuacao}`,
-    `Origem do contato: ${data.origemEvento}`,
+    `Área de atuação: ${data.areaAtuacao}`,
+    `Origem: ${data.origemEvento}`,
     `Principal desafio: ${data.principalDesafio}`,
-    `Presenca: ${data.confirmacaoPresenca}`,
+    `Presença: ${data.confirmacaoPresenca}`,
     `WhatsApp: ${data.whatsapp}`,
     `E-mail: ${data.email}`
   );
-
   return lines.join("\n");
 }
 
-function buildSheetMonkeyBlock(data) {
+function buildSheetBlock(data) {
   return sheetBlockOrder
-    .map(({ key, question }) => {
-      const value = data[key] ? data[key] : "Nao informado";
-      return `Pergunta: ${question}\nResposta: ${value}\n=====`;
+    .map(({ key, question }, index) => {
+      const value = data[key] || "Nao informado";
+      return `${index + 1} pergunta\n${question}\nresposta\n${value}\n=======`;
     })
     .join("\n\n");
 }
 
-async function sendToSheetMonkey(data) {
+async function sendToSheet(data) {
   const payload = {
     ...data,
-    bloco_respostas: buildSheetMonkeyBlock(data),
+    bloco_respostas: buildSheetBlock(data),
     submittedAt: new Date().toISOString(),
   };
 
-  const response = await fetch(SHEETMONKEY_URL, {
+  const res = await fetch(SHEETMONKEY_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 
-  if (!response.ok) {
-    throw new Error("Falha no envio para SheetMonkey.");
-  }
+  if (!res.ok) throw new Error("Erro no envio para SheetMonkey.");
 }
 
-function openWhatsApp(message) {
-  const encoded = encodeURIComponent(message);
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
+function openWhatsApp(msg) {
+  let targetNumber = WHATSAPP_NUMBER.replace(/\D/g, "");
+  if (targetNumber.length <= 11) {
+    targetNumber = `55${targetNumber}`;
+  }
+  const url = `https://wa.me/${targetNumber}?text=${encodeURIComponent(msg)}`;
   window.open(url, "_blank", "noopener,noreferrer");
 }
 
-function setupChoiceGroups() {
-  const groups = document.querySelectorAll("[data-choice-group]");
-  groups.forEach((group) => {
-    group.addEventListener("click", (event) => {
-      const option = event.target.closest(".option");
-      if (!option) return;
+/* ─── CHOICE GROUPS ──────────────────────────────── */
+function setupChoices() {
+  document.querySelectorAll("[data-choice-group]").forEach((group) => {
+    group.addEventListener("click", (e) => {
+      const btn = e.target.closest(".choice");
+      if (!btn) return;
 
-      const hiddenId = group.getAttribute("data-choice-group");
-      const hiddenInput = document.getElementById(hiddenId);
-      if (!hiddenInput) return;
+      const fieldId = group.dataset.choiceGroup;
+      const hidden  = document.getElementById(fieldId);
+      if (!hidden) return;
 
-      group.querySelectorAll(".option").forEach((item) => item.classList.remove("selected"));
-      option.classList.add("selected");
-      hiddenInput.value = option.dataset.value || "";
+      group.querySelectorAll(".choice").forEach((c) => c.classList.remove("selected"));
+      btn.classList.add("selected");
+      hidden.value = btn.dataset.value || "";
 
-      setTimeout(() => {
-        nextStep();
-      }, 120);
+      // Auto-advance
+      setTimeout(() => nextStep(), 140);
     });
   });
 }
 
-function setupNavButtons() {
-  form.addEventListener("click", (event) => {
-    const nextBtn = event.target.closest("[data-next]");
-    const prevBtn = event.target.closest("[data-prev]");
-
-    if (nextBtn) nextStep();
-    if (prevBtn) prevStep();
+/* ─── NAV BUTTONS ────────────────────────────────── */
+function setupNav() {
+  form.addEventListener("click", (e) => {
+    if (e.target.closest("[data-next]")) nextStep();
+    if (e.target.closest("[data-prev]")) prevStep();
   });
 }
 
-function setupEnterAdvance() {
-  form.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter") return;
-    const target = event.target;
-    if (target.tagName !== "INPUT") return;
-    if (target.type === "hidden") return;
-
-    if (currentStep < steps.length - 1) {
-      event.preventDefault();
+/* ─── ENTER TO ADVANCE ───────────────────────────── */
+function setupEnter() {
+  form.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    if (e.target.tagName !== "INPUT") return;
+    if (e.target.type === "hidden") return;
+    if (currentStep < TOTAL_STEPS - 1) {
+      e.preventDefault();
       nextStep();
     }
   });
 }
 
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
+/* ─── PHONE MASK ─────────────────────────────────── */
+function setupPhoneMask() {
+  const tel = document.getElementById("whatsapp");
+  if (!tel) return;
 
-  if (!validateCurrentStep()) return;
+  tel.addEventListener("input", () => {
+    let v = tel.value.replace(/\D/g, "").slice(0, 11);
+    if (v.length > 6) {
+      v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    } else if (v.length > 2) {
+      v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+    } else if (v.length > 0) {
+      v = `(${v}`;
+    }
+    tel.value = v;
+  });
+}
 
-  const submitBtn = form.querySelector("button[type='submit']");
-  if (submitBtn.disabled) return;
+/* ─── SUBMIT ─────────────────────────────────────── */
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!validate()) return;
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Confirmando...";
+  const btn = form.querySelector("button[type='submit']");
+  if (btn.disabled) return;
 
-  const data = getFormDataObject();
-  const waMessage = buildWhatsAppMessage(data);
+  btn.disabled = true;
+  const textEl = btn.querySelector(".btn-submit-text");
+  if (textEl) textEl.textContent = "Enviando…";
 
-  let warning = "";
+  const data    = getFormData();
+  const waMsg   = buildWhatsApp(data);
+  let warning   = "";
 
   try {
-    await sendToSheetMonkey(data);
-  } catch (error) {
-    warning = "Nao foi possivel registrar no banco agora, mas sua confirmacao pode ser finalizada pelo WhatsApp.";
+    await sendToSheet(data);
+  } catch {
+    warning = "Não foi possível registrar no banco agora, mas sua confirmação pode ser finalizada pelo WhatsApp.";
   }
 
   form.hidden = true;
   successState.hidden = false;
 
-  if (warningEl) {
-    warningEl.remove();
-    warningEl = null;
-  }
+  if (warningEl) { warningEl.remove(); warningEl = null; }
 
   if (warning) {
     warningEl = document.createElement("p");
-    warningEl.className = "hint";
+    warningEl.className = "field-hint";
+    warningEl.style.color = "#C05020";
     warningEl.textContent = warning;
     successState.appendChild(warningEl);
   }
 
-  openWhatsApp(waMessage);
+  openWhatsApp(waMsg);
 
-  submitBtn.disabled = false;
-  submitBtn.textContent = "Confirmar presença";
+  btn.disabled = false;
+  if (textEl) textEl.textContent = "Confirmar presença";
 });
 
+/* ─── RESTART ────────────────────────────────────── */
 restartBtn.addEventListener("click", () => {
   form.reset();
-  form.hidden = false;
+  form.hidden      = false;
   successState.hidden = true;
-  if (warningEl) {
-    warningEl.remove();
-    warningEl = null;
-  }
-  document.querySelectorAll(".option.selected").forEach((el) => el.classList.remove("selected"));
+  if (warningEl) { warningEl.remove(); warningEl = null; }
+  document.querySelectorAll(".choice.selected").forEach((c) => c.classList.remove("selected"));
   currentStep = 0;
   showStep(0);
 });
 
-setupChoiceGroups();
-setupNavButtons();
-setupEnterAdvance();
+/* ─── INIT ───────────────────────────────────────── */
+setupChoices();
+setupNav();
+setupEnter();
+setupPhoneMask();
 showStep(0);
+}

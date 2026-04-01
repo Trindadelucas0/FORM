@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmação | Café com Negócios</title>
+    <meta
+      name="description"
+      content="Responda às perguntas do Café com Negócios e confirme sua presença no encontro empresarial."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./perguntas.css" />
+  </head>
+  <body>
+    <div class="bg-scene" aria-hidden="true">
+      <div class="bg-circle c1"></div>
+      <div class="bg-circle c2"></div>
+      <div class="bg-circle c3"></div>
+      <div class="grain"></div>
+    </div>
+
+    <a class="back-link" href="./index.html">← Voltar para a apresentação</a>
+
+    <main class="layout">
+      <section class="panel-right" aria-live="polite">
+        <div class="form-card">
+          <header class="card-top">
+            <div
+              class="progress-track"
+              role="progressbar"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="10"
+              id="progressWrap"
+            >
+              <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <p class="step-counter" id="progressLabel">Etapa 1 de 9</p>
+          </header>
+
+          <form id="eventForm" class="wizard" novalidate>
+            <section class="step active" data-step="0">
+              <div class="step-icon">👤</div>
+              <h2 class="step-q">Qual é o seu nome completo?</h2>
+              <input
+                type="text"
+                id="nomeCompleto"
+                name="nomeCompleto"
+                autocomplete="name"
+                required
+                placeholder="Ex.: Maria Silva Souza"
+              />
+              <p class="field-hint">
+                Use o nome como deseja constar na lista de presença.
+              </p>
+              <div class="step-actions">
+                <button type="button" class="btn-next" data-next>
+                  Continuar <span class="btn-arrow">→</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="step" data-step="1">
+              <div class="step-icon">💬</div>
+              <h2 class="step-q">Qual é o seu WhatsApp?</h2>
+              <input
+                type="tel"
+                id="whatsapp"
+                name="whatsapp"
+                autocomplete="tel"
+                required
+                placeholder="(00) 00000-0000"
+              />
+              <p class="field-hint">
+                Canal oficial para confirmação e orientações do evento.
+              </p>
+              <div class="step-actions">
+                <button type="button" class="btn-back" data-prev>← Voltar</button>
+                <button type="button" class="btn-next" data-next>
+                  Continuar <span class="btn-arrow">→</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="step" data-step="2">
+              <div class="step-icon">✉️</div>
+              <h2 class="step-q">Qual é o seu e-mail?</h2>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                autocomplete="email"
+                required
+                placeholder="voce@empresa.com"
+              />
+              <div class="step-actions">
+                <button type="button" class="btn-back" data-prev>← Voltar</button>
+                <button type="button" class="btn-next" data-next>
+                  Continuar <span class="btn-arrow">→</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="step" data-step="3">
+              <div class="step-icon">🏢</div>
+              <h2 class="step-q">
+                Qual é o nome da sua empresa?
+                <span class="optional">(opcional)</span>
+              </h2>
+              <input
+                type="text"
+                id="empresa"
+                name="empresa"
+                autocomplete="organization"
+                placeholder="Ex.: Exito Consultoria"
+              />
+              <div class="step-actions">
+                <button type="button" class="btn-back" data-prev>← Voltar</button>
+                <button type="button" class="btn-next" data-next>
+                  Continuar <span class="btn-arrow">→</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="step" data-step="4">
+              <div class="step-icon">🎂</div>
+              <h2 class="step-q">Qual é a sua idade?</h2>
+              <input
+                type="number"
+                id="idade"
+                name="idade"
+                min="14"
+                max="110"
+                required
+                placeholder="Ex.: 34"
+              />
+              <div class="step-actions">
+                <button type="button" class="btn-back" data-prev>← Voltar</button>
+                <button type="button" class="btn-next" data-next>
+                  Continuar <span class="btn-arrow">→</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="step" data-step="5">
+              <div class="step-icon">🏭</div>
+              <h2 class="step-q">Qual é a área de atuação da sua empresa?</h2>
+              <div class="choice-grid" data-choice-group="areaAtuacao">
+                <button type="button" class="choice" data-value="Comercio">Comércio</button>
+                <button type="button" class="choice" data-value="Servicos">Serviços</button>
+                <button type="button" class="choice" data-value="Industria">Indústria</button>
+                <button type="button" class="choice" data-value="Tecnologia">Tecnologia</button>
+                <button type="button" class="choice" data-value="Saude">Saúde</button>
+                <button type="button" class="choice" data-value="Outro">Outro</button>
+              </div>
+              <input type="hidden" id="areaAtuacao" name="areaAtuacao" required />
+              <div class="step-actions">
+                <button type="button" class="btn-back" data-prev>← Voltar</button>
+              </div>
+            </section>
+
+            <section class="step" data-step="6">
+              <div class="step-icon">📣</div>
+              <h2 class="step-q">Como você ficou sabendo do evento?</h2>
+              <div class="choice-grid" data-choice-group="origemEvento">
+                <button type="button" class="choice" data-value="Instagram">Instagram</button>
+                <button type="button" class="choice" data-value="WhatsApp">WhatsApp</button>
+                <button type="button" class="choice" data-value="Indicacao">Indicação</button>
+                <button type="button" class="choice" data-value="Site">Site</button>
+                <button type="button" class="choice" data-value="Outro">Outro</button>
+              </div>
+              <input type="hidden" id="origemEvento" name="origemEvento" required />
+              <div class="step-actions">
+                <button type="button" class="btn-back" data-prev>← Voltar</button>
+              </div>
+            </section>
+
+            <section class="step" data-step="7">
+              <div class="step-icon">🎯</div>
+              <h2 class="step-q">Qual é o principal desafio da sua empresa hoje?</h2>
+              <div class="choice-grid" data-choice-group="principalDesafio">
+                <button type="button" class="choice" data-value="Vendas">Aumentar vendas</button>
+                <button type="button" class="choice" data-value="Organizacao">Organizar processos</button>
+                <button type="button" class="choice" data-value="Equipe">Gestionar equipe</button>
+                <button type="button" class="choice" data-value="Financeiro">Controle financeiro</button>
+                <button type="button" class="choice" data-value="Marketing">Atrair clientes</button>
+              </div>
+              <input
+                type="hidden"
+                id="principalDesafio"
+                name="principalDesafio"
+                required
+              />
+              <div class="step-actions">
+                <button type="button" class="btn-back" data-prev>← Voltar</button>
+              </div>
+            </section>
+
+            <section class="step" data-step="8">
+              <div class="step-icon">✅</div>
+              <h2 class="step-q">Você confirma sua presença no evento?</h2>
+              <div
+                class="choice-grid confirm-grid"
+                data-choice-group="confirmacaoPresenca"
+              >
+                <button type="button" class="choice choice-yes" data-value="Sim">
+                  Sim, confirmo!
+                </button>
+                <button type="button" class="choice" data-value="Talvez">Talvez</button>
+                <button type="button" class="choice" data-value="Nao">
+                  Não poderei ir
+                </button>
+              </div>
+              <input
+                type="hidden"
+                id="confirmacaoPresenca"
+                name="confirmacaoPresenca"
+                required
+              />
+              <div class="step-actions">
+                <button type="button" class="btn-back" data-prev>← Voltar</button>
+              </div>
+            </section>
+
+            <section class="step" data-step="9">
+              <div class="step-icon">📋</div>
+              <h2 class="step-q">Tudo certo! Revise suas informações.</h2>
+              <div id="reviewBox" class="review-box"></div>
+              <div class="step-actions">
+                <button type="button" class="btn-back" data-prev>← Voltar</button>
+                <button type="submit" class="btn-submit">
+                  <span class="btn-submit-text">Confirmar presença</span>
+                  <span class="btn-submit-icon">☕</span>
+                </button>
+              </div>
+            </section>
+          </form>
+
+          <section id="successState" class="success-panel" hidden>
+            <div class="success-icon">☕</div>
+            <h2 class="success-title">Presença registrada!</h2>
+            <p class="success-desc">
+              Seu cadastro foi concluído com sucesso. Vamos abrir o WhatsApp com
+              uma mensagem pronta para finalizar a confirmação.
+            </p>
+            <div class="success-detail">
+              <span>10 de abril · 7h30</span>
+              <span>Tipo Coworking · Unaí, MG</span>
+              <span>Endereço: Av. Ver. João Narciso, 239 - Sala 07 - Centro, Unaí - MG, 38610-298</span>
+            </div>
+            <button type="button" id="restartBtn" class="btn-restart">
+              Responder novamente
+            </button>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
