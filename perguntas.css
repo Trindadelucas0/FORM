@@ -493,10 +493,53 @@ input.invalid {
   font-size: 50px;
 }
 
+.success-actions {
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-confirm-wa {
+  min-height: 50px;
+  padding: 0 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(245, 230, 198, 0.4);
+  background:
+    linear-gradient(128deg, rgba(255, 245, 224, 0.2) 0%, rgba(255, 245, 224, 0) 36%),
+    linear-gradient(132deg, #d7b273 0%, #9c6f36 100%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 12px 24px rgba(141, 95, 38, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: transform var(--ease), filter var(--ease), box-shadow var(--ease);
+}
+
+.btn-confirm-wa:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow:
+    0 16px 28px rgba(141, 95, 38, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.btn-confirm-wa[aria-disabled="true"] {
+  opacity: 0.55;
+  pointer-events: none;
+  box-shadow: none;
+}
+
 .btn-restart {
-  margin-top: 6px;
   min-height: 46px;
-  padding: 0 24px;
+  padding: 0 20px;
   border-radius: var(--radius-sm);
   border: 1.5px solid #e1d6c8;
   color: var(--text-muted);

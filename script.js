@@ -1,4 +1,4 @@
-const SHEETMONKEY_URL = "https://api.sheetmonkey.io/form/axErGpUycFbk49zD3z1Sg3";
+const SHEETMONKEY_URL = "https://api.sheetmonkey.io/form/g6Xj21ioou3xrGefiKXTEm";
 const WHATSAPP_NUMBER = "3898788927";
 
 const form       = document.getElementById("eventForm");
@@ -9,9 +9,11 @@ const progressWrap  = document.getElementById("progressWrap");
 const reviewBox  = document.getElementById("reviewBox");
 const successState = document.getElementById("successState");
 const restartBtn = document.getElementById("restartBtn");
+const confirmPresenceBtn = document.getElementById("confirmPresenceBtn");
 
 let currentStep = 0;
 let warningEl   = null;
+let whatsappUrl = "";
 
 const TOTAL_STEPS = steps.length; // includes review step
 
@@ -47,7 +49,8 @@ if (
   !progressWrap ||
   !reviewBox ||
   !successState ||
-  !restartBtn
+  !restartBtn ||
+  !confirmPresenceBtn
 ) {
   // Page without wizard markup (e.g. index landing).
   // Exit safely and keep script reusable.
@@ -151,9 +154,10 @@ function buildReview() {
 
 function buildWhatsApp(data) {
   return [
-    "Confirmação de presença — Café com Negócios",
+    "Ola! Estou confirmando minha presenca no Cafe com Negocios.",
     "",
-    buildSheetBlock(data),
+    `Nome: ${data.nomeCompleto || "Nao informado"}`,
+    `E-mail: ${data.email || "Nao informado"}`,
   ].join("\n");
 }
 
@@ -184,13 +188,24 @@ async function sendToSheet(data) {
   if (!res.ok) throw new Error("Erro no envio para SheetMonkey.");
 }
 
-function openWhatsApp(msg) {
+function buildWhatsAppUrl(msg) {
   let targetNumber = WHATSAPP_NUMBER.replace(/\D/g, "");
   if (targetNumber.length <= 11) {
     targetNumber = `55${targetNumber}`;
   }
-  const url = `https://wa.me/${targetNumber}?text=${encodeURIComponent(msg)}`;
-  window.open(url, "_blank", "noopener,noreferrer");
+  return `https://wa.me/${targetNumber}?text=${encodeURIComponent(msg)}`;
+}
+
+function setConfirmButton(url) {
+  whatsappUrl = url || "";
+  if (!whatsappUrl) {
+    confirmPresenceBtn.setAttribute("aria-disabled", "true");
+    confirmPresenceBtn.removeAttribute("href");
+    return;
+  }
+
+  confirmPresenceBtn.setAttribute("aria-disabled", "false");
+  confirmPresenceBtn.setAttribute("href", whatsappUrl);
 }
 
 /* ─── CHOICE GROUPS ──────────────────────────────── */
@@ -267,6 +282,7 @@ form.addEventListener("submit", async (e) => {
 
   const data    = getFormData();
   const waMsg   = buildWhatsApp(data);
+  const waUrl   = buildWhatsAppUrl(waMsg);
   let warning   = "";
 
   try {
@@ -277,6 +293,7 @@ form.addEventListener("submit", async (e) => {
 
   form.hidden = true;
   successState.hidden = false;
+  setConfirmButton(waUrl);
 
   if (warningEl) { warningEl.remove(); warningEl = null; }
 
@@ -288,8 +305,6 @@ form.addEventListener("submit", async (e) => {
     successState.appendChild(warningEl);
   }
 
-  openWhatsApp(waMsg);
-
   btn.disabled = false;
   if (textEl) textEl.textContent = "Confirmar presença";
 });
@@ -300,9 +315,16 @@ restartBtn.addEventListener("click", () => {
   form.hidden      = false;
   successState.hidden = true;
   if (warningEl) { warningEl.remove(); warningEl = null; }
+  setConfirmButton("");
   document.querySelectorAll(".choice.selected").forEach((c) => c.classList.remove("selected"));
   currentStep = 0;
   showStep(0);
+});
+
+confirmPresenceBtn.addEventListener("click", (e) => {
+  if (!whatsappUrl) {
+    e.preventDefault();
+  }
 });
 
 /* ─── INIT ───────────────────────────────────────── */
@@ -310,5 +332,6 @@ setupChoices();
 setupNav();
 setupEnter();
 setupPhoneMask();
+setConfirmButton("");
 showStep(0);
 }
